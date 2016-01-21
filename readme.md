@@ -4,8 +4,9 @@ CodeC
 Basic concepts
 --
 
-ICoder<T>  :: T -> string
-	a coder that reads a meta of T and outpus a string
+	ICoder<T>  :: T -> string
+
+a coder that reads a meta of T and outpus a string
 
 Meta class definition
 --
@@ -41,10 +42,10 @@ Coder
 ZeroCoder<T> :: ICoder<T>
 	a coder that outputs nothing whatever it reads
 	
-	**Usage**
+**Usage**
 	var coder = new ZeroCoder<ServiceMeta>();
 	
-	**For simplicity**
+**For simplicity**
 	var coder = ZeroCoder<ServiceMeta>.Instance;
 	
 	coder.Code(meta); 
@@ -53,10 +54,10 @@ ZeroCoder<T> :: ICoder<T>
 UnitCoder<T> :: ICoder<T>
 	a coder that outputs an identical string whatever it reads
 	
-	**Usage**
+**Usage**
 	var coder = new UnitCoder<ServiceMeta>("hello, world");
 	
-	**For simplicity**
+**For simplicity**
 	var coder = "hello, world".Unit<ServiceMeta>();
 	
 	coder.Code(meta); 
@@ -65,10 +66,10 @@ UnitCoder<T> :: ICoder<T>
 BasicCoder<T> :: ICoder<T>
 	a coder that reads metas and fills into a template of which it is completely comprised.
 	
-	**Usage**
+**Usage**
 	var coder = new BasicCoder<ServiceMeta>(meta => string.Format("I{0}Service", meta.Name));
 	
-	**For simplicity**
+**For simplicity**
 	var coder = "I{0}Service".Basic<ServiceMeta>(meta => meta.Name);
 	
 	coder.Code(meta); 
@@ -77,12 +78,12 @@ BasicCoder<T> :: ICoder<T>
 RepeatedCoder<T> :: ICoder<IEnumerable<T>>
 	take a ICoder<T> then convert to a ICoder<IEnumerable<T>>, which means a repeated ICoder<T>
 
-	**Usage** 
+**Usage** 
 	var method = new BasicCoder<MethodMeta>(meta => string.Format("method{0}_{1}", meta.Name, meta.Id));
 	
 	var methods = new RepeatedCoder<MethodMeta>(method, "\n");
 	
-	**For simplicity**
+**For simplicity**
 	var methods = 
 		"method{0}_{1}"
 			.Basic<MethodMeta>(meta => meta.Name,  meta => meta.Id)
@@ -95,12 +96,12 @@ RepeatedCoder<T> :: ICoder<IEnumerable<T>>
 SequenceCoder<T> :: ICoder<T> 
 	combine several coders sequentially
 	
-	**Usage**
+**Usage**
 	var method1 = new BasicCoder<MethodMeta>(meta => string.Format("method{0}_{1}", meta.Name, meta.Id));
 	var method2 = new BasicCoder<MethodMeta>(meta => string.Format(" Name={0} Id={1}", meta.Name, meta.Id));
 	var method = new SequenceCoder<MethodMeta>(method1, method2);
 	
-	**For simplicity**
+**For simplicity**
 	var method = Generator.GenSequence(
 		"method{0}_{1}".Basic<MethodMeta>(meta => meta.Name,  meta => meta.Id)
 	   ," Name={0} Id={1}".Basic<MethodMeta>(meta => meta.Name,  meta => meta.Id));
@@ -112,12 +113,12 @@ SequenceCoder<T> :: ICoder<T>
 SatisfyCoder<T> :: ICoder<T>
 	decorate a coder with a condition which must be true for the decorated coder to output as before, or it would output nothing
 	
-	**Usage**
+**Usage**
 	var method1 = new BasicCoder<MethodMeta>(meta => string.Format("method{0}_{1}", meta.Name, meta.Id));
 	var smethod = new SatisfyCoder<MethodMeta>(method1, meta => meta.Id
 	 == 1); // 只会输出Id为1的method
 	
-	**For simplicity**
+**For simplicity**
 	var smethod = 
 	"method{0}_{1}"
 		.Basic<MethodMeta>(meta => meta.Name,  meta => meta.Id)
@@ -129,7 +130,7 @@ SatisfyCoder<T> :: ICoder<T>
 SelectCoder<T> :: ICoder<T>
 	combine several coders to one coder, which stands for selectivity semantically.When drive a SelectCoder<T>, it would test coders it consists of in order and stop for the first one whose condition is satisfied.
 	
-	**Usage**
+**Usage**
 	var smethod1 = 
 	"method{0}_{1}"
 		.Basic<MethodMeta>(meta => meta.Name,  meta => meta.Id)
@@ -141,7 +142,7 @@ SelectCoder<T> :: ICoder<T>
 	
 	var method = new SelectCoder<MethodMeta>(smethod1, smethod2);
 	
-	**For simplicity**
+**For simplicity**
 	var method = Generator.GenSelect(
 		"method{0}_{1}"
 			.Basic<MethodMeta>(meta => meta.Name,  meta => meta.Id)
